@@ -2,17 +2,26 @@
 var express = require('express');
 var http = require('http');
 
-var controller = require('./controller')
+var summary_controller = require('./controllers/summary_controller')
 var app = express();
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/store_db')
 
 //app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/summary', function(req, res){
-    res.send(controller.generateSummary());
+process.on('uncaughtException', function(err) {
+    console.log('Caught exception: ' + err);
+  });
+
+app.get('/summary', function(req, res) {
+    summary_controller.generateSummary()
+        .then( summary => res.json(summary))
 });
 
 app.post('/findProducts', function(req, res){
-    res.send(controller.findProducts(req.body));
+    controller.findProducts(req.body)
+        .then( products => res.json(products));
 })
 
 app.all('*', function(req, res){
