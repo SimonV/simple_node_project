@@ -37,11 +37,11 @@ describe("Summary", function() {
     ];
 
     const PRODUCTS = [
-        { title: "product1", store_id: '5ae4d4d054b7531004797c56', price: 3},
-        { title: "product3", store_id: '5ae4d4d054b7531004797c56', price: 5},
-        { title: "product5", store_id: '5ae4d4d054b7531004797c56', price: 7},
-        { title: "product2", store_id: '5ae4d4d054b7531004797c58', price: 4},
-        { title: "product4", store_id: '5ae4d4d054b7531004797c58', price: 6}
+        { title: "product1", brand: "br1", sku:"pcs", store_id: '5ae4d4d054b7531004797c56', price: 3, shipping: 1, },
+        { title: "product3", brand: "br1", sku:"pcs", store_id: '5ae4d4d054b7531004797c56', price: 5, shipping: 1, },
+        { title: "product5", brand: "br2", sku:"pcs", store_id: '5ae4d4d054b7531004797c56', price: 7, shipping: 1, },
+        { title: "product2", brand: "br2", sku:"pcs", store_id: '5ae4d4d054b7531004797c58', price: 4, shipping: 1, },
+        { title: "product4", brand: "br3", sku:"pcs", store_id: '5ae4d4d054b7531004797c58', price: 6, shipping: 1, }
     ];
 
     it("should return valid empty summary with no available stores", async () => {
