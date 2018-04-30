@@ -50,9 +50,6 @@ const build_limit = (limit) => {
 var controller = {
     findProducts: async function(parameters){
         var query = Product;
-        
-        var filter_clause = {};
-        var sort_clause = {};
 
         //Validate parameter values
         if (parameters.hasOwnProperty('filter')){

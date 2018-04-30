@@ -27,31 +27,55 @@ describe("Products", async function() {
     });
 
     const PRODUCTS = [
-        { title: "product1", store_id: '5ae4d4d054b7531004797c56', price: 3},
-        { title: "product3", store_id: '5ae4d4d054b7531004797c56', price: 5},
-        { title: "product5", store_id: '5ae4d4d054b7531004797c56', price: 7},
-        { title: "product2", store_id: '5ae4d4d054b7531004797c58', price: 4},
-        { title: "product4", store_id: '5ae4d4d054b7531004797c58', price: 6}
+        { title: "product1", brand: "br1", sku:"pcs", store_id: '5ae4d4d054b7531004797c56', price: 3, shipping: 1, },
+        { title: "product3", brand: "br1", sku:"pcs", store_id: '5ae4d4d054b7531004797c56', price: 5, shipping: 1, },
+        { title: "product5", brand: "br2", sku:"pcs", store_id: '5ae4d4d054b7531004797c56', price: 7, shipping: 1, },
+        { title: "product2", brand: "br2", sku:"pcs", store_id: '5ae4d4d054b7531004797c58', price: 4, shipping: 1, },
+        { title: "product4", brand: "br3", sku:"pcs", store_id: '5ae4d4d054b7531004797c58', price: 6, shipping: 1, }
     ];
 
     it("should validate filter parameters", async() => {
-        // var parameters = {filter: [{'title':'product1'}]};
-        // try {
-        //     var product_list = await product_controller.findProducts(parameters);
-        // } catch (error) {
-            
-        // }
-        // var product_list = await product_controller.findProducts(parameters);
-        // expect.
-        // expect.fail("","","Missing test");
 
-        // var parameters = {filter: []};
-        // var product_list = await product_controller.findProducts(parameters);
-        expect.fail("","","Missing test");
+        expect(controller.findProducts({filter: {title: 1111 }}))
+            .to.be.rejectedWith(TypeError);
+
+        expect(controller.findProducts({filter: {title: "1111", sku: 4 }}))
+            .to.be.rejectedWith(TypeError);
+
+        expect(controller.findProducts({filter: {title: "1111", sku: "pcs", price: "asd" }}))
+            .to.be.rejectedWith(TypeError);
+
+
+        ProductMock.expects('find')
+            .withArgs( {title: "1111", sku: "pcs", price: 3 } )
+            .chain('exec')
+            .resolves(PRODUCTS);
+
+        var products = await controller.findProducts({filter: {title: "1111", sku: "pcs", price: 3 }});
+
+        expect(products).to.be.a("Array");
+        expect(products.length).equal(PRODUCTS.length); 
     });
 
     it("should validate sort parameters", async() => {
-        expect.fail("","","Missing test");    
+        expect(controller.findProducts({sort: {title: "desc", brand: "asc" }}))
+            .to.be.rejectedWith(TypeError);  
+
+        expect(controller.findProducts({sort: {fake_field: "desc" }}))
+            .to.be.rejectedWith(TypeError);  
+
+        expect(controller.findProducts({sort: {title: 1111 }}))
+            .to.be.rejectedWith(TypeError);
+
+        ProductMock.expects('find')
+            .chain('sort').withArgs({price: -1})
+            .chain('exec')
+            .resolves(PRODUCTS);
+
+        var products = await controller.findProducts({sort: {price: "desc"}});
+
+        expect(products).to.be.a("Array");
+        expect(products.length).equal(PRODUCTS.length);    
     });
 
     it("should validate limit parameter", async() => {
@@ -73,10 +97,30 @@ describe("Products", async function() {
     });
 
     it("should return valid response without products", async() => {
-        expect.fail("","","Missing test");
+        ProductMock.expects('find')
+            .chain('exec')
+            .resolves([]);
+
+        var products = await controller.findProducts({});
+        expect(products).to.be.a("Array");
+        expect(products.length).to.eq(0);
     });
 
     it("should return valid response", async() => {
-        expect.fail("","","Missing test");
+        ProductMock.expects('find').withArgs({title: "1111", sku: "pcs", price: 3 })
+            .chain('sort').withArgs({price: -1})
+            .chain('limit').withArgs(10)
+            .chain('exec')
+            .resolves(PRODUCTS);
+
+        var query = { 
+            filter:{ title: "1111", sku: "pcs", price: 3 }, 
+            sort: {price: "desc"}, 
+            limit: 10 
+        };
+
+        var products = await controller.findProducts(query);
+            expect(products).to.be.a("Array");
+            expect(products.length).to.eq(PRODUCTS.length);
     });
 });
