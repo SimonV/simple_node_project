@@ -3,6 +3,7 @@ var express = require('express');
 var http = require('http');
 
 var summary_controller = require('./controllers/summary_controller')
+var product_controller = require('./controllers/product_controller')
 var app = express();
 
 var mongoose = require('mongoose');
@@ -20,7 +21,7 @@ app.get('/summary', function(req, res) {
 });
 
 app.post('/findProducts', function(req, res){
-    controller.findProducts(req.body)
+    product_controller.findProducts(req.body)
         .then( products => res.json(products));
 })
 
