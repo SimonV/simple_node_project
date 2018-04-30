@@ -35,13 +35,13 @@ const store_summariser = async (currentValue) => {
         store_summary['min_price'] = 0;
         store_summary['max_price'] = 0;
     }
-    
+
     return store_summary;   
 }
 
 var controller = {
     generateSummary: async function(){
-        console.log('Generating summary');
+        //console.log('Generating summary');
 
         var store_summary = {}; 
 
