@@ -1,4 +1,4 @@
-//var bodyParser  = require('body-parser');
+var bodyParser  = require('body-parser');
 var express = require('express');
 var http = require('http');
 
@@ -9,20 +9,40 @@ var app = express();
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/store_db')
 
-//app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ extended: true }));
 
 // process.on('uncaughtException', function(err) {
 //     console.log('Caught exception: ' + err);
 //   });
 
 app.get('/summary', async function(req, res) {
-    var summary = await summary_controller.generateSummary();
-    return res.json(summary);
+    try {
+        var summary = await summary_controller.generateSummary();
+        return res.json(summary);   
+    } catch (error) {
+        //check error type
+        console.log(error);
+        res.status(500);
+        res.send('Internal error');
+    }
 });
 
 app.post('/findProducts', async function(req, res){
-    var prodcuts = await product_controller.findProducts(req.body);
-    return res.json(prodcuts);
+    try {
+        var prodcuts = await product_controller.findProducts(req.body);
+        return res.json(prodcuts);
+    } catch(error){
+        if (error instanceof TypeError){
+            console.log(error);
+            res.status(400);
+            res.send('Invalid request');      
+        }else{
+            //check error type
+            console.log(error);
+            res.status(500);
+            res.send('Internal error');
+        }
+    }
 })
 
 app.all('*', function(req, res){

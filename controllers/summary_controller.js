@@ -43,13 +43,8 @@ var controller = {
     generateSummary: async function(){
         //console.log('Generating summary');
 
-        try {
-            var stores = await Store.find({});
-            return await Promise.all(stores.map(store_summariser));
-        }
-        catch(error){
-            console.log(error);
-        }
+        var stores = await Store.find({});
+        return await Promise.all(stores.map(store_summariser));
     }
 }
 
