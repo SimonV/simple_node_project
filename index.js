@@ -11,18 +11,18 @@ mongoose.connect('mongodb://localhost/store_db')
 
 //app.use(bodyParser.urlencoded({ extended: true }));
 
-process.on('uncaughtException', function(err) {
-    console.log('Caught exception: ' + err);
-  });
+// process.on('uncaughtException', function(err) {
+//     console.log('Caught exception: ' + err);
+//   });
 
-app.get('/summary', function(req, res) {
-    summary_controller.generateSummary()
-        .then( summary => res.json(summary))
+app.get('/summary', async function(req, res) {
+    var summary = await summary_controller.generateSummary();
+    return res.json(summary);
 });
 
-app.post('/findProducts', function(req, res){
-    product_controller.findProducts(req.body)
-        .then( products => res.json(products));
+app.post('/findProducts', async function(req, res){
+    var prodcuts = await product_controller.findProducts(req.body);
+    return res.json(prodcuts);
 })
 
 app.all('*', function(req, res){
